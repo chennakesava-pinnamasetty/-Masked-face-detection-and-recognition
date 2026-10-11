@@ -1,0 +1,196 @@
+import numpy as np
+import os
+from imutils import paths
+from keras import optimizers
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.applications import MobileNetV2
+from tensorflow.keras.layers import AveragePooling2D
+from tensorflow.keras.layers import GlobalAveragePooling2D
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.layers import Flatten
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Input
+from tensorflow.keras.models import Model
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing import image as image_utils
+from keras.applications.imagenet_utils import decode_predictions
+from keras.applications.imagenet_utils import preprocess_input
+import argparse
+from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.preprocessing.image import load_img
+from tensorflow.keras.utils import to_categorical
+from sklearn.preprocessing import LabelBinarizer
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.linear_model import LogisticRegression
+import pandas as pd
+from re import search
+import shutil
+import natsort
+from PIL import Image
+import matplotlib.pyplot as plt
+import tensorflow as tf
+from tqdm import tqdm 
+import cv2
+from keras.preprocessing import image
+from tensorflow.keras.models import load_model
+import imutils
+from distutils.version import StrictVersion
+from keras.models import Sequential
+from keras.layers.convolutional import Conv2D
+from keras.layers.convolutional import MaxPooling2D
+from keras.layers.core import Activation
+from keras.layers.core import Flatten
+from keras.layers.core import Dense
+from keras import backend as K
+from tensorflow.keras import datasets, layers, models, losses
+from IPython.display import display, Image
+import os, glob
+import seaborn as sns
+from tensorflow.keras.callbacks import Callback,EarlyStopping
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.utils import to_categorical
+from sklearn.metrics import confusion_matrix , classification_report 
+from sklearn.preprocessing import LabelBinarizer
+from sklearn.metrics import roc_curve, auc, roc_auc_score
+from IPython.display import clear_output
+import warnings
+warnings.filterwarnings('ignore')
+from tensorflow.keras.utils import plot_model
+
+
+
+
+aug=ImageDataGenerator(rotation_range=20,zoom_range=0.15,width_shift_range=0.2,height_shift_range=0.2,shear_range=0.15,
+horizontal_flip=True,vertical_flip=False,fill_mode='nearest')
+
+
+
+
+DATASET=r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET'
+imagePaths=list(paths.list_images(DATASET))
+
+
+
+
+imagePaths
+
+
+
+
+inputFolder=(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET\Aamir_Khan')
+folderLen=len(inputFolder)
+os.mkdir(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Aamir_Khan')
+for img in glob.glob(inputFolder +"/*.*"):
+    image=cv2.imread(img)
+    imgResized=cv2.resize(image, (224,224))
+    cv2.imwrite(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Aamir_Khan'+img[folderLen:], imgResized)
+    
+    
+    
+inputFolder=(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET\Aishwarya_Rai')
+folderLen=len(inputFolder)
+os.mkdir(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Aishwarya_Rai')
+for img in glob.glob(inputFolder +"/*.*"):
+    image=cv2.imread(img)
+    imgResized=cv2.resize(image, (224,224))
+    cv2.imwrite(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Aishwarya_Rai'+img[folderLen:], imgResized)
+    
+    
+    
+inputFolder=(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET\Akshay_Kumar')
+folderLen=len(inputFolder)
+os.mkdir(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Akshay_Kumar')
+for img in glob.glob(inputFolder +"/*.*"):
+    image=cv2.imread(img)
+    imgResized=cv2.resize(image, (224,224))
+    cv2.imwrite(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Akshay_Kumar'+img[folderLen:], imgResized)
+    
+    
+        
+inputFolder=(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET\Bipasha_Basu')
+folderLen=len(inputFolder)
+os.mkdir(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Bipasha_Basu')
+for img in glob.glob(inputFolder +"/*.*"):
+    image=cv2.imread(img)
+    imgResized=cv2.resize(image, (224,224))
+    cv2.imwrite(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Bipasha_Basu'+img[folderLen:], imgResized)
+    
+    
+    
+inputFolder=(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET\Govinda')
+folderLen=len(inputFolder)
+os.mkdir(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Govinda')
+for img in glob.glob(inputFolder +"/*.*"):
+    image=cv2.imread(img)
+    imgResized=cv2.resize(image, (224,224))
+    cv2.imwrite(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Govinda'+img[folderLen:], imgResized)
+    
+    
+    
+inputFolder=(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET\Juhi_Chawla')
+folderLen=len(inputFolder)
+os.mkdir(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Juhi_Chawla')
+for img in glob.glob(inputFolder +"/*.*"):
+    image=cv2.imread(img)
+    imgResized=cv2.resize(image, (224,224))
+    cv2.imwrite(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Juhi_Chawla'+img[folderLen:], imgResized)
+    
+    
+
+inputFolder=(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET\Kajol')
+folderLen=len(inputFolder)
+os.mkdir(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Kajol')
+for img in glob.glob(inputFolder +"/*.*"):
+    image=cv2.imread(img)
+    imgResized=cv2.resize(image, (224,224))
+    cv2.imwrite(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Kajol'+img[folderLen:], imgResized)
+    
+    
+    
+inputFolder=(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET\Salman_Khan')
+folderLen=len(inputFolder)
+os.mkdir(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Salman_Khan')
+for img in glob.glob(inputFolder +"/*.*"):
+    image=cv2.imread(img)
+    imgResized=cv2.resize(image, (224,224))
+    cv2.imwrite(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Salman_Khan'+img[folderLen:], imgResized)
+    
+    
+    
+inputFolder=(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET\ShahRukh_Khan')
+folderLen=len(inputFolder)
+os.mkdir(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\ShahRukh_Khan')
+for img in glob.glob(inputFolder +"/*.*"):
+    image=cv2.imread(img)
+    imgResized=cv2.resize(image, (224,224))
+    cv2.imwrite(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\ShahRukh_Khan'+img[folderLen:], imgResized)
+    
+    
+    
+inputFolder=(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET\Shruti_Haasan')
+folderLen=len(inputFolder)
+os.mkdir(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Shruti_Haasan')
+for img in glob.glob(inputFolder +"/*.*"):
+    image=cv2.imread(img)
+    imgResized=cv2.resize(image, (224,224))
+    cv2.imwrite(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1\Shruti_Haasan'+img[folderLen:], imgResized)
+
+
+
+
+DATASET1=r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1'
+imagePaths=list(paths.list_images(DATASET1))
+
+
+
+
+imagePaths
