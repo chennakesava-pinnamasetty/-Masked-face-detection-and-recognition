@@ -1,0 +1,134 @@
+Class_Names=os.listdir(r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1')
+Class_Names
+
+
+
+
+train_dir = r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1'
+test_dir = r'C:\Users\Anil\Python-3.9\Masked Face Recognition\DATASET1'
+
+
+
+
+
+SEED = 12
+IMG_HEIGHT = 224
+IMG_WIDTH = 224
+BATCH_SIZE = 32
+EPOCHS = 45
+FINE_TUNING_EPOCHS = 60
+LR = 0.001
+NUM_CLASSES = 10
+EARLY_STOPPING_CRITERIA=3
+CLASS_LABELS  = ['Aamir_Khan','Aishwarya_Rai','Akshay_Kumar','Bipasha_Basu','Govinda','Juhi_Chawla','Kajol','Salman_Khan','ShahRukh_Khan','Shruti_Haasan']
+
+
+
+
+preprocess_fun = tf.keras.applications.mobilenet_v2.preprocess_input
+
+train_datagen = ImageDataGenerator(horizontal_flip=True,
+                                   width_shift_range=0.2,
+                                   height_shift_range=0.2,
+                                   rescale = 1./255,
+                                   validation_split = 0.2,
+                                   preprocessing_function=preprocess_fun
+                                  )
+test_datagen = ImageDataGenerator(rescale = 1./255,
+                                  validation_split = 0.2,
+                                  preprocessing_function=preprocess_fun)
+
+
+
+
+train_generator = train_datagen.flow_from_directory(directory = train_dir,
+                                                    target_size = (224,224),
+                                                    batch_size = BATCH_SIZE,
+                                                    shuffle  = True , 
+                                                    color_mode = "rgb",
+                                                    class_mode = "categorical",
+                                                    subset = "training",
+                                                    seed = 12
+                                                   )
+
+
+
+
+validation_generator = test_datagen.flow_from_directory(directory = train_dir,
+                                                         target_size = (224,224),
+                                                         batch_size = BATCH_SIZE,
+                                                         shuffle  = True , 
+                                                         color_mode = "rgb",
+                                                         class_mode = "categorical",
+                                                         subset = "validation",
+                                                         seed = 12
+                                                        )
+
+
+
+
+test_generator = test_datagen.flow_from_directory(directory = test_dir,
+                                                         target_size = (224,224),
+                                                         batch_size = BATCH_SIZE,
+                                                         shuffle  = False , 
+                                                         color_mode = "rgb",
+                                                         class_mode = "categorical",
+                                                         subset = "validation",
+                                                         seed = 12
+                                                        )
+
+
+
+
+# Helper Functions
+def display_one_image(image, title, subplot, color):
+    plt.subplot(subplot)
+    plt.axis('off')
+    plt.imshow(image)
+    plt.title(title, fontsize=16)
+    
+def display_nine_images(images, titles, title_colors=None):
+    subplot = 331
+    plt.figure(figsize=(13,13))
+    for i in range(9):
+        color = 'black' if title_colors is None else title_colors[i]
+        display_one_image(images[i], titles[i], 331+i, color)
+    plt.tight_layout()
+    plt.subplots_adjust(wspace=0.2, hspace=0.2)
+    plt.show()
+
+def image_title(label, prediction):
+  # Both prediction (probabilities) and label (one-hot) are arrays with one item per class.
+    class_idx = np.argmax(label, axis=-1)
+    prediction_idx = np.argmax(prediction, axis=-1)
+    if class_idx == prediction_idx:
+        return f'{CLASS_LABELS[prediction_idx]} [correct]', 'black'
+    else:
+        return f'{CLASS_LABELS[prediction_idx]} [incorrect, should be {CLASS_LABELS[class_idx]}]', 'red'
+
+def get_titles(images, labels, model):
+    predictions = model.predict(images)
+    titles, colors = [], []
+    for label, prediction in zip(classes, predictions):
+        title, color = image_title(label, prediction)
+        titles.append(title)
+        colors.append(color)
+    return titles, colors
+
+img_datagen = ImageDataGenerator(rescale = 1./255)
+img_generator = img_datagen.flow_from_directory(directory = train_dir,
+                                                    target_size = (224,224),
+                                                    batch_size = BATCH_SIZE,
+                                                    shuffle  = True , 
+                                                    color_mode = "rgb",
+                                                    class_mode = "categorical",
+                                                    subset = "training",
+                                                    seed = 12
+                                                   )
+
+clear_output()
+
+images, classes = next(img_generator)
+class_idxs = np.argmax(classes, axis=-1) 
+labels = [CLASS_LABELS[idx] for idx in class_idxs]
+display_nine_images(images, labels)
