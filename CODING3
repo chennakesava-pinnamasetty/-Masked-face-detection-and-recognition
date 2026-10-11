@@ -1,0 +1,80 @@
+fig = px.bar(x = CLASS_LABELS,
+             y = [list(train_generator.classes).count(i) for i in np.unique(train_generator.classes)] , 
+             color = np.unique(train_generator.classes) ,
+             color_continuous_scale="Viridis") 
+fig.update_xaxes(title="")
+fig.update_yaxes(title = "Number of Images")
+fig.update_layout(showlegend = True,
+    title = {
+        'text': 'Train Data Distribution ',
+        'y':0.95,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'})
+fig.show()
+
+
+
+
+fig = px.bar(x = CLASS_LABELS,
+             y = [list(test_generator.classes).count(i) for i in np.unique(test_generator.classes)] , 
+             color = np.unique(test_generator.classes) ,
+             color_continuous_scale="plasma") 
+fig.update_xaxes(title="")
+fig.update_yaxes(title = "Number of Images")
+fig.update_layout(showlegend = True,
+    title = {
+        'text': 'Test Data Distribution ',
+        'y':0.95,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'})
+fig.show()
+
+
+
+
+Original_Model= MobileNetV2(input_shape=(224,224,3),include_top=False, weights='imagenet')
+
+
+
+
+Original_Model.summary()
+
+
+
+
+Original_Model= MobileNetV2(input_shape=(224,224,3),include_top=False, weights='imagenet')
+
+
+
+
+
+headModel=Original_Model.output
+NewModel=tf.keras.layers.BatchNormalization(renorm=True)(headModel)
+NewModel=tf.keras.layers.GlobalAveragePooling2D()(NewModel)
+NewModel=tf.keras.layers.Dense(256, activation='relu')(NewModel)
+NewModel=tf.keras.layers.Dense(256, activation='relu')(NewModel)
+NewModel=tf.keras.layers.Dense(128, activation='relu')(NewModel)
+NewModel=tf.keras.layers.Dropout(0.5)(NewModel)
+NewModel=tf.keras.layers.Dense(10,activation='softmax')(NewModel)
+
+model=Model(inputs=Original_Model.input,outputs=NewModel)
+
+
+
+
+
+for layer in Original_Model.layers:
+    layer.trainable=False
+
+
+
+
+
+model.summary()
+
+
+
+
+model.summary()
